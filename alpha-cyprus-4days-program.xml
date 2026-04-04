@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<alpha_cyprus_program>
+  <channel>Alpha Cyprus</channel>
+  <generated_date>2026-04-05</generated_date>
+
+  <!-- ==================== ΚΥΡΙΑΚΗ 5/4/2026 ==================== -->
+  <day date="2026-04-05" weekday="Κυριακή">
+    <program>
+      <time>06:00</time>
+      <title>MY GREECE</title>
+      <category>ΨΥΧΑΓΩΓΙΑ</category>
+      <episode></episode>
+      <description>Ταξιδιωτικό μαγκαζίνο</description>
+      <type>Επανάληψη</type>
+    </program>
+    <program>
+      <time>07:00</time>
+      <title>ΜΗΝ ΑΡΧΙΖΕΙΣ ΤΗ ΜΟΥΡΜΟΥΡΑ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type>Επανάληψη</type>
+    </program>
+    <program>
+      <time>07:50</time>
+      <title>ΟΙΚΟΓΕΝΕΙΑΚΕΣ ΙΣΤΟΡΙΕΣ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type>Επανάληψη</type>
+    </program>
+    <program>
+      <time>08:45</time>
+      <title>KITCHEN LAB</title>
+      <category>ΨΥΧΑΓΩΓΙΑ</category>
+      <episode></episode>
+      <description>Μαγειρική εκπομπή</description>
+      <type></type>
+    </program>
+    <program>
+      <time>09:45</time>
+      <title>ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ ΜΕ ΤΟΝ ΜΑΝΕΣΗ</title>
+      <category>ΕΝΗΜΕΡΩΣΗ / ΨΥΧΑΓΩΓΙΑ</category>
+      <episode></episode>
+      <description></description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>13:00</time>
+      <title>ΕΧΩ ΠΑΙΔΙΑ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type>Επανάληψη</type>
+    </program>
+    <program>
+      <time>13:50</time>
+      <title>ΚΑΛΥΤΕΡΑ ΔΕ ΓΙΝΕΤΑΙ!</title>
+      <category>ΨΥΧΑΓΩΓΙΑ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>16:40</time>
+      <title>NO LEFTOVERS</title>
+      <category>ΨΥΧΑΓΩΓΙΑ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>17:30</time>
+      <title>ΤΡΟΜΕΡΟΙ ΓΟΝΕΙΣ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>18:05</time>
+      <title>ALPHA NEWS</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description>Δελτίο Ειδήσεων</description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>19:00</time>
+      <title>ΤΟ ΣΟΪ ΣΟΥ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>20:00</time>
+      <title>ALPHA NEWS</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description>Κεντρικό Δελτίο Ειδήσεων</description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>21:00</time>
+      <title>ΠΑΡΑΔΟΣΙΑΚΗ ΒΡΑΔΙΑ</title>
+      <category>ΨΥΧΑΓΩΓΙΑ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>23:00</time>
+      <title>ΤΕΤ-Α-ΤΕΤ ΣΤΟΝ ALPHA</title>
+      <category>ΨΥΧΑΓΩΓΙΑ</category>
+      <episode></episode>
+      <description>Συνεντεύξεις</description>
+      <type></type>
+    </program>
+  </day>
+
+  <!-- ==================== ΔΕΥΤΕΡΑ 6/4/2026 ==================== -->
+  <day date="2026-04-06" weekday="Δευτέρα">
+    <program>
+      <time>06:00</time>
+      <title>ALPHA ΚΑΛΗΜΕΡΑ</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description>Πρωινή εκπομπή</description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>09:00</time>
+      <title>ALPHA NEWS</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description></description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>18:00</time>
+      <title>ΝΑ Μ' ΑΓΑΠΑΣ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>19:00</time>
+      <title>ALPHA NEWS</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description></description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>20:00</time>
+      <title>ALPHA NEWS</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description>Κεντρικό Δελτίο</description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>21:00</time>
+      <title>ΑΓΙΟΣ ΕΡΩΤΑΣ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>22:20</time>
+      <title>Η ΓΗ ΤΗΣ ΕΛΙΑΣ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description>5ος κύκλος</description>
+      <type></type>
+    </program>
+  </day>
+
+  <!-- ==================== ΤΡΙΤΗ 7/4/2026 ==================== -->
+  <day date="2026-04-07" weekday="Τρίτη">
+    <program>
+      <time>06:00</time>
+      <title>ALPHA ΚΑΛΗΜΕΡΑ</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description>Πρωινή εκπομπή</description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>18:00</time>
+      <title>ΝΑ Μ' ΑΓΑΠΑΣ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>20:00</time>
+      <title>ALPHA NEWS</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description>Κεντρικό Δελτίο</description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>21:00</time>
+      <title>ΑΓΙΟΣ ΕΡΩΤΑΣ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+    <program>
+      <time>22:20</time>
+      <title>Η ΓΗ ΤΗΣ ΕΛΙΑΣ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description>5ος κύκλος</description>
+      <type></type>
+    </program>
+  </day>
+
+  <!-- ==================== ΤΕΤΑΡΤΗ 8/4/2026 ==================== -->
+  <day date="2026-04-08" weekday="Τετάρτη">
+    <program>
+      <time>06:00</time>
+      <title>ALPHA ΚΑΛΗΜΕΡΑ</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description>Πρωινή εκπομπή</description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>20:00</time>
+      <title>ALPHA NEWS</title>
+      <category>ΕΝΗΜΕΡΩΣΗ</category>
+      <episode></episode>
+      <description>Κεντρικό Δελτίο</description>
+      <type>Live</type>
+    </program>
+    <program>
+      <time>22:20</time>
+      <title>ΤΟ ΣΠΙΤΙ ΔΙΠΛΑ ΣΤΟ ΠΟΤΑΜΙ</title>
+      <category>ΕΛΛΗΝΙΚΕΣ ΣΕΙΡΕΣ</category>
+      <episode></episode>
+      <description></description>
+      <type></type>
+    </program>
+  </day>
+
+</alpha_cyprus_program>
