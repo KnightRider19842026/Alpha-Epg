@@ -2,46 +2,49 @@ import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 
-BASE_URL = "https://www.alphacyprus.com.cy/program"
+URL = "https://tvepg.eu/en/cyprus/c/alpha-kuprou"
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0"
-}
+HEADERS = {"User-Agent": "Mozilla/5.0"}
 
 
-def fetch_page():
-    r = requests.get(BASE_URL, headers=HEADERS)
+def fetch():
+    r = requests.get(URL, headers=HEADERS)
     return BeautifulSoup(r.text, "html.parser")
 
 
-def parse_days(soup):
-    days_data = []
+def parse_day(day_block):
+    lines = day_block.get_text("\n").split("\n")
 
-    # βρίσκουμε sections ημέρας
-    sections = soup.find_all("section")
+    programmes = []
 
-    for section in sections:
-        items = section.find_all(["div", "li"])
+    for line in lines:
+        line = line.strip()
 
-        day_program = []
-        current_time = None
+        if "|" in line:
+            try:
+                time_part, title = line.split("|", 1)
+                time_part = time_part.strip()
+                title = title.strip()
 
-        for item in items:
-            text = item.get_text(strip=True)
+                if ":" in time_part:
+                    programmes.append((time_part, title))
+            except:
+                continue
 
-            # ώρα
-            if len(text) == 5 and ":" in text:
-                current_time = text
+    return programmes
 
-            # τίτλος
-            elif current_time and len(text) > 2:
-                day_program.append((current_time, text))
-                current_time = None
 
-        if len(day_program) > 5:
-            days_data.append(day_program)
+def get_2_days(soup):
+    days = []
 
-    return days_data[:3]  # μόνο 3 μέρες
+    blocks = soup.find_all("pre")
+
+    for block in blocks[:2]:
+        parsed = parse_day(block)
+        if parsed:
+            days.append(parsed)
+
+    return days
 
 
 def build_xml(days):
@@ -57,28 +60,16 @@ def build_xml(days):
 
         for i, (time_str, title) in enumerate(programmes):
 
-            start_time = datetime.strptime(time_str, "%H:%M")
-            start_dt = base_date.replace(
-                hour=start_time.hour,
-                minute=start_time.minute,
-                second=0,
-                microsecond=0
-            )
+            h, m = map(int, time_str.split(":"))
 
-            # stop time
+            start_dt = base_date.replace(hour=h, minute=m, second=0)
+
             if i < len(programmes) - 1:
-                next_time = datetime.strptime(programmes[i + 1][0], "%H:%M")
-                stop_dt = base_date.replace(
-                    hour=next_time.hour,
-                    minute=next_time.minute,
-                    second=0,
-                    microsecond=0
-                )
+                nh, nm = map(int, programmes[i + 1][0].split(":"))
+                stop_dt = base_date.replace(hour=nh, minute=nm, second=0)
 
-                # FIX για μετά τα μεσάνυχτα
                 if stop_dt <= start_dt:
                     stop_dt += timedelta(days=1)
-
             else:
                 stop_dt = start_dt + timedelta(minutes=60)
 
@@ -96,8 +87,8 @@ def build_xml(days):
 
 
 def main():
-    soup = fetch_page()
-    days = parse_days(soup)
+    soup = fetch()
+    days = get_2_days(soup)
     build_xml(days)
 
 
