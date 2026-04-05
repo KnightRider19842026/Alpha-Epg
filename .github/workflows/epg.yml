@@ -1,8 +1,8 @@
-name: Alpha EPG 2 Days
+name: Alpha EPG Selenium
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # κάθε μέρα
+    - cron: "0 3 * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,11 +12,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: browser-actions/setup-chrome@v1
+
       - uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - run: pip install requests beautifulsoup4
+      - run: pip install selenium beautifulsoup4
 
       - run: python epg.py
 
