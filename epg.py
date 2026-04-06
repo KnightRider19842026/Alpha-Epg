@@ -18,15 +18,13 @@ def get_driver():
 
 
 def clean_title(title):
-    import re
-
-    # remove (E), (R), κλπ
+    # remove (E), (R), etc
     title = re.sub(r"\(.*?\)", "", title)
 
     # remove "Καθημερινά στις ..."
-    title = re.sub(r"Καθημερινά\s+στις\s+\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"Καθημερινά\s+στις\s+\d{1,2}:\d{2}.*", "", title, flags=re.IGNORECASE)
 
-    # remove extra spaces
+    # clean spaces
     title = re.sub(r"\s+", " ", title)
 
     return title.strip()
@@ -63,30 +61,8 @@ def click_next(driver):
         return False
 
 
-def fill_24h(programmes):
-    filled = []
-
-    for i in range(len(programmes) - 1):
-        filled.append(programmes[i])
-
-        h1, m1 = map(int, programmes[i][0].split(":"))
-        h2, m2 = map(int, programmes[i + 1][0].split(":"))
-
-        t1 = h1 * 60 + m1
-        t2 = h2 * 60 + m2
-
-        # αν υπάρχει μεγάλο κενό → βάλε filler
-        if t2 - t1 > 120:
-            filled.append((f"{h1:02d}:{m1:02d}", "Unknown Program"))
-
-    filled.append(programmes[-1])
-    return filled
-
-
 def build_xml(programmes):
     now = datetime.now()
-
-    # 🔥 σωστή βάση ημέρας
     base_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
     xml = "<?xml version='1.0' encoding='utf-8'?>\n<tv>\n"
@@ -94,14 +70,16 @@ def build_xml(programmes):
     xml += '<display-name>Alpha Cyprus</display-name>\n'
     xml += "</channel>\n"
 
+    events = []
+
     current_day = 0
     last_hour = -1
 
+    # convert to datetime events
     for i, (time_str, title) in enumerate(programmes):
 
         h, m = map(int, time_str.split(":"))
 
-        # αν γυρίσει πίσω → νέα μέρα
         if h < last_hour:
             current_day += 1
 
@@ -119,6 +97,27 @@ def build_xml(programmes):
             stop_dt = start_dt + timedelta(minutes=60)
 
         last_hour = h
+
+        events.append((start_dt, stop_dt, title))
+
+    # keep ONLY today 00:00–23:59
+    start_limit = base_date
+    end_limit = base_date + timedelta(days=1)
+
+    xml_events = []
+
+    for start_dt, stop_dt, title in events:
+
+        if stop_dt <= start_limit or start_dt >= end_limit:
+            continue
+
+        start_dt = max(start_dt, start_limit)
+        stop_dt = min(stop_dt, end_limit)
+
+        xml_events.append((start_dt, stop_dt, title))
+
+    # build XML
+    for start_dt, stop_dt, title in xml_events:
 
         start = start_dt.strftime("%Y%m%d%H%M%S +0300")
         stop = stop_dt.strftime("%Y%m%d%H%M%S +0300")
@@ -139,12 +138,9 @@ def main():
 
     all_programmes = []
 
+    # πάρε 3 μέρες για σωστό parsing
     for _ in range(3):
         day_programmes = fetch_day(driver)
-
-        # 👉 fix 24ωρου
-        day_programmes = fill_24h(day_programmes)
-
         all_programmes.extend(day_programmes)
 
         if not click_next(driver):
