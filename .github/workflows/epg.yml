@@ -2,9 +2,8 @@ name: Update Alpha Cyprus EPG Daily
 
 on:
   schedule:
-    # Τρέχει κάθε μέρα στις 03:00 UTC
-    - cron: '0 3 * * *'
-  workflow_dispatch:  # Επιτρέπει manual trigger
+    - cron: '0 3 * * *'  # κάθε μέρα στις 03:00 UTC
+  workflow_dispatch:
 
 jobs:
   update_epg:
