@@ -18,9 +18,17 @@ def get_driver():
 
 
 def clean_title(title):
-    # αφαιρεί (E), (R), επεισόδια κλπ
+    import re
+
+    # remove (E), (R), κλπ
     title = re.sub(r"\(.*?\)", "", title)
+
+    # remove "Καθημερινά στις ..."
+    title = re.sub(r"Καθημερινά\s+στις\s+\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
+
+    # remove extra spaces
     title = re.sub(r"\s+", " ", title)
+
     return title.strip()
 
 
@@ -53,6 +61,26 @@ def click_next(driver):
         return True
     except:
         return False
+
+
+def fill_24h(programmes):
+    filled = []
+
+    for i in range(len(programmes) - 1):
+        filled.append(programmes[i])
+
+        h1, m1 = map(int, programmes[i][0].split(":"))
+        h2, m2 = map(int, programmes[i + 1][0].split(":"))
+
+        t1 = h1 * 60 + m1
+        t2 = h2 * 60 + m2
+
+        # αν υπάρχει μεγάλο κενό → βάλε filler
+        if t2 - t1 > 120:
+            filled.append((f"{h1:02d}:{m1:02d}", "Unknown Program"))
+
+    filled.append(programmes[-1])
+    return filled
 
 
 def build_xml(programmes):
@@ -113,11 +141,15 @@ def main():
 
     # 🔥 πάρε 3 μέρες για να είσαι safe (πιάνει πλήρη 48h πάντα)
     for _ in range(3):
-        day_programmes = fetch_day(driver)
-        all_programmes.extend(day_programmes)
+    day_programmes = fetch_day(driver)
 
-        if not click_next(driver):
-            break
+    # 👉 εδώ μπαίνει το fix για 24ωρο
+    day_programmes = fill_24h(day_programmes)
+
+    all_programmes.extend(day_programmes)
+
+    if not click_next(driver):
+        break
 
     driver.quit()
 
