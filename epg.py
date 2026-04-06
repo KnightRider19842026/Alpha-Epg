@@ -19,14 +19,42 @@ def get_driver():
     return webdriver.Chrome(options=options)
 
 
+import re
+
 def clean_title(title):
-    title = re.sub(r"\(.*?\)", "", title)                    # αφαιρεί (E), (R) κλπ.
+    # αφαιρεί παρενθέσεις π.χ. (E), (R)
+    title = re.sub(r"\(.*?\)", "", title)
+
+    # αφαιρεί LIVE NOW (case-insensitive)
     title = re.sub(r"live now", "", title, flags=re.IGNORECASE)
-    title = re.sub(r"ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ|ΔΕΥΤΕΡΑ|ΤΡΙΤΗ|ΤΕΤΑΡΤΗ|ΠΕΜΠΤΗ|ΠΑΡΑΣΚΕΥΗ|ΣΑΒΒΑΤΟ|ΚΥΡΙΑΚΗ\s*ΣΤΙΣ\s*\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
+
+    # αφαιρεί φράσεις με μέρα + ώρα
+    title = re.sub(
+        r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ|ΔΕΥΤΕΡΑ|ΤΡΙΤΗ|ΤΕΤΑΡΤΗ|ΠΕΜΠΤΗ|ΠΑΡΑΣΚΕΥΗ|ΣΑΒΒΑΤΟ|ΚΥΡΙΑΚΗ)\s*ΣΤΙΣ\s*\d{1,2}:\d{2}",
+        "", title, flags=re.IGNORECASE
+    )
+
+    # αφαιρεί γενικά υπολείμματα με μέρα + ώρα κολλημένα
+    title = re.sub(r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ).*?\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
+
+    # αφαιρεί φράση "Δες όλα τα επεισόδια στο WEBTV"
     title = re.sub(r"Δες όλα τα επεισόδια στο WEBTV", "", title, flags=re.IGNORECASE)
-    title = re.sub(r"Live:", "", title, flags=re.IGNORECASE)
+
+    # καθαρίζει περιττά κενά
     title = re.sub(r"\s+", " ", title).strip()
+
     return title
+
+# παραδείγματα
+titles = [
+    "DEAL (E) LIVE NOW",
+    "ΜΑΓΕΙΡΙΚΗ ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ ΣΤΙΣ 19:00",
+    "ΤΑ ΕΠΕΙΣΟΔΙΑ (R) ΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 21:30",
+    "ΝΕΑ ΣΕΙΡΑ Δες όλα τα επεισόδια στο WEBTV"
+]
+
+for t in titles:
+    print(clean_title(t))
 
 
 def fetch_day(driver):
