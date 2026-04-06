@@ -56,23 +56,29 @@ for t in titles:
 
 
 def fetch_day(driver):
-    time.sleep(3)
-    html = driver.page_source
-    soup = BeautifulSoup(html, "html.parser")
-
+    time.sleep(5)
     programmes = []
-    current_time = None
-
-    for tag in soup.find_all(["div", "span"]):
-        text = tag.get_text(strip=True)
-
-        if len(text) == 5 and ":" in text:
-            current_time = text
-
-        elif current_time and len(text) > 2:
-            programmes.append((current_time, clean_title(text)))
-            current_time = None
-
+    
+    try:
+        # Προσαρμόστε το selector ανάλογα με την τρέχουσα δομή της σελίδας
+        rows = driver.find_elements(By.CSS_SELECTOR, "div[class*='program'], div[class*='schedule'], div.time-slot, .entry")
+        
+        for row in rows:
+            try:
+                time_el = row.find_element(By.XPATH, ".//*[contains(text(), ':') and string-length(text()) <= 6]")
+                title_el = row.find_element(By.XPATH, ".//a | .//h3 | .//div[contains(@class,'title')]")
+                
+                time_str = time_el.text.strip()
+                title = clean_title(title_el.text.strip())
+                
+                if re.match(r'^\d{1,2}:\d{2}$', time_str) and title:
+                    programmes.append((time_str, title))
+            except:
+                continue
+    except Exception as e:
+        print("Error in fetch_day:", e)
+    
+    print(f"Found {len(programmes)} programmes this day")
     return programmes
 
 
