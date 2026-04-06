@@ -6,11 +6,12 @@ import re
 URL = "https://www.alphacyprus.com.cy/program"
 
 def clean_title(title):
-    # αφαιρεί παρενθέσεις, live now, μέρα+ώρα, WEBTV, copyright
+    # αφαιρεί παρενθέσεις, live now, WEBTV, copyright
     title = re.sub(r"\(.*?\)", "", title)
     title = re.sub(r"live now", "", title, flags=re.IGNORECASE)
     title = re.sub(r"Δες όλα τα επεισόδια στο WEBTV", "", title, flags=re.IGNORECASE)
     title = re.sub(r"copyright.*", "", title, flags=re.IGNORECASE)
+    # αφαιρεί φράσεις με μέρα + ώρα
     title = re.sub(
         r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ|ΔΕΥΤΕΡΑ|ΤΡΙΤΗ|ΤΕΤΑΡΤΗ|ΠΕΜΠΤΗ|ΠΑΡΑΣΚΕΥΗ|ΣΑΒΒΑΤΟ|ΚΥΡΙΑΚΗ)\s*ΣΤΙΣ\s*\d{1,2}:\d{2}",
         "", title, flags=re.IGNORECASE
@@ -40,15 +41,11 @@ def fetch_next_day_programmes():
             current_time = None
 
     tomorrow = datetime.now() + timedelta(days=1)
-    # Αφαιρούμε Τετάρτη
-    if tomorrow.weekday() == 2:  # 0=Δευτέρα, 2=Τετάρτη
-        print("Η επόμενη μέρα είναι Τετάρτη → δεν δημιουργούμε πρόγραμμα.")
-        return [], tomorrow
     return programmes, tomorrow
 
 def build_xml(programmes, target_date):
     if not programmes:
-        print("❌ Κανένα πρόγραμμα βρέθηκε για την επόμενη μέρα.")
+        print("❌ Κανένα πρόγραμμα βρέθηκε.")
         return
 
     base_date = target_date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -59,12 +56,12 @@ def build_xml(programmes, target_date):
         h, m = map(int, time_str.split(":"))
         start_dt = base_date + timedelta(hours=h, minutes=m)
 
-        # Υπολογισμός ακριβούς ώρας λήξης
+        # Ακριβής ώρα λήξης
         if i < len(programmes) - 1:
             nh, nm = map(int, programmes[i + 1][0].split(":"))
             stop_dt = base_date + timedelta(hours=nh, minutes=nm)
         else:
-            stop_dt = start_dt + timedelta(minutes=60)  # Τελευταίο πρόγραμμα 60 λεπτά
+            stop_dt = start_dt + timedelta(minutes=60)
 
         start = start_dt.strftime("%Y%m%d%H%M%S +0300")
         stop = stop_dt.strftime("%Y%m%d%H%M%S +0300")
