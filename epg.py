@@ -5,8 +5,11 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import time
 import re
+import os
+import json
 
 URL = "https://www.alphacyprus.com.cy/program"
+LAST_RUN_FILE = "last_run.json"
 
 def get_driver():
     options = Options()
@@ -55,6 +58,7 @@ def fetch_day(driver):
             
             programmes.append((time_str, title))
     
+    # Αφαίρεση διπλοτύπων
     seen = set()
     unique_programmes = []
     for t, title in programmes:
@@ -117,7 +121,7 @@ def build_xml(programmes):
 
         last_hour = h
 
-        # φιλτράρουμε μόνο Δευτέρα(0) έως Πέμπτη(3)
+        # Φιλτράρισμα Δευτέρα(0) έως Πέμπτη(3)
         if 0 <= start_dt.weekday() <= 3:
             events.append((start_dt, stop_dt, title))
 
@@ -135,24 +139,41 @@ def build_xml(programmes):
 
     print(f"✅ Το epg.xml δημιουργήθηκε με {len(events)} προγράμματα (Δευτέρα-Πέμπτη).")
 
-def main():
+def get_last_run():
+    if os.path.exists(LAST_RUN_FILE):
+        with open(LAST_RUN_FILE, "r") as f:
+            data = json.load(f)
+            return datetime.fromisoformat(data["last_run"])
+    return None
+
+def set_last_run():
+    with open(LAST_RUN_FILE, "w") as f:
+        json.dump({"last_run": datetime.now().isoformat()}, f)
+
+def main_loop():
     while True:
-        driver = get_driver()
-        print("Άνοιγμα σελίδας Alpha Cyprus...")
-        driver.get(URL)
+        last_run = get_last_run()
+        now = datetime.now()
 
-        all_programmes = []
-        for day in range(4):
-            day_prog = fetch_day(driver)
-            all_programmes.extend(day_prog)
-            if not click_next(driver):
-                break
+        if not last_run or (now - last_run).days >= 2:
+            print("\n🚀 Ξεκινάμε ανανέωση XML...")
+            driver = get_driver()
+            driver.get(URL)
 
-        driver.quit()
-        build_xml(all_programmes)
+            all_programmes = []
+            for day in range(4):
+                day_prog = fetch_day(driver)
+                all_programmes.extend(day_prog)
+                if not click_next(driver):
+                    break
+            driver.quit()
 
-        print("\n⏳ Αναμονή 2 ημερών για αυτόματη ανανέωση...")
-        time.sleep(2 * 24 * 60 * 60)  # 2 ημέρες σε δευτερόλεπτα
+            build_xml(all_programmes)
+            set_last_run()
+            print("✅ Ανανεώθηκε XML.")
+
+        # Έλεγχος κάθε 1 ώρα
+        time.sleep(3600)
 
 if __name__ == "__main__":
-    main()
+    main_loop()
