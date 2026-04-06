@@ -1,15 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
-import time
 import re
-import os
-import json
 
 URL = "https://www.alphacyprus.com.cy/program"
-LAST_RUN_FILE = "last_run.json"
 
 def get_driver():
     options = Options()
@@ -20,80 +18,48 @@ def get_driver():
     return webdriver.Chrome(options=options)
 
 def clean_title(title):
+    # αφαιρεί παρενθέσεις π.χ. (E), (R)
     title = re.sub(r"\(.*?\)", "", title)
+    # αφαιρεί LIVE NOW
     title = re.sub(r"live now", "", title, flags=re.IGNORECASE)
+    # αφαιρεί φράσεις μέρα + ώρα
     title = re.sub(
         r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ|ΔΕΥΤΕΡΑ|ΤΡΙΤΗ|ΤΕΤΑΡΤΗ|ΠΕΜΠΤΗ|ΠΑΡΑΣΚΕΥΗ|ΣΑΒΒΑΤΟ|ΚΥΡΙΑΚΗ)\s*ΣΤΙΣ\s*\d{1,2}:\d{2}",
         "", title, flags=re.IGNORECASE
     )
     title = re.sub(r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ).*?\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
+    # αφαιρεί τη φράση WEBTV
     title = re.sub(r"Δες όλα τα επεισόδια στο WEBTV", "", title, flags=re.IGNORECASE)
-    title = re.sub(r"\s+", " ", title).strip()
-    return title
+    # καθαρίζει περιττά κενά
+    return re.sub(r"\s+", " ", title).strip()
 
 def fetch_day(driver):
     print("   Φόρτωση προγράμματος...")
-    time.sleep(6)
-    
+    # περιμένουμε να εμφανιστεί κάποιο πρόγραμμα
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "div.programme-item"))
+    )
     soup = BeautifulSoup(driver.page_source, "html.parser")
     programmes = []
-    
-    time_pattern = re.compile(r'(\d{1,2}:\d{2})')
-    containers = soup.find_all(["div", "li", "article", "section", "a"], class_=True)
-    
-    for container in containers:
-        full_text = container.get_text(" ", strip=True)
-        match = time_pattern.search(full_text)
-        if not match:
-            continue
-            
-        time_str = match.group(1)
-        raw_title = time_pattern.sub("", full_text, count=1).strip()
-        title = clean_title(raw_title)
-        
-        if (len(title) > 4 and 
-            title.lower() not in ["live", "live:", ""] and 
-            not title.startswith(("http", "Επόμενη", "Προηγούμενη", "Next")) and
-            "MICROSITE" not in title.upper()):
-            
-            programmes.append((time_str, title))
-    
-    # Αφαίρεση διπλοτύπων
-    seen = set()
-    unique_programmes = []
-    for t, title in programmes:
-        key = (t, title[:100])
-        if key not in seen:
-            seen.add(key)
-            unique_programmes.append((t, title))
-    
-    return unique_programmes
 
-def click_next(driver):
-    try:
-        selectors = [
-            "//button[contains(., 'Next') or contains(., 'Επόμενη') or contains(., '→')]",
-            "//button[contains(@class, 'next')]",
-            "//a[contains(@class, 'next')]",
-            "//button[contains(@aria-label, 'Next')]"
-        ]
-        for selector in selectors:
-            buttons = driver.find_elements(By.XPATH, selector)
-            for btn in buttons:
-                if btn.is_displayed() and btn.is_enabled():
-                    driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
-                    time.sleep(1.5)
-                    driver.execute_script("arguments[0].click();", btn)
-                    time.sleep(6)
-                    return True
-        return False
-    except Exception as e:
-        print(f"   Click next error: {e}")
-        return False
+    # παίρνουμε μόνο τα div με class programme-item (1η στήλη = ώρα, 2η = τίτλος)
+    containers = soup.select("div.programme-item")
+    
+    for c in containers:
+        # παίρνουμε ώρα και τίτλο
+        time_el = c.select_one(".time")
+        title_el = c.select_one(".title")
+        if not time_el or not title_el:
+            continue
+        time_str = time_el.get_text(strip=True)
+        title = clean_title(title_el.get_text(" ", strip=True))
+        if time_str and title:
+            programmes.append((time_str, title))
+    return programmes
 
 def build_xml(programmes):
     if not programmes:
-        print("❌ Δεν βρέθηκαν προγράμματα. Το XML δεν δημιουργήθηκε.")
+        print("❌ Δεν βρέθηκαν προγράμματα.")
         return
 
     now = datetime.now()
@@ -101,15 +67,13 @@ def build_xml(programmes):
     xml = '<?xml version="1.0" encoding="utf-8"?>\n<tv>\n'
     xml += '<channel id="alpha.cy">\n  <display-name>Alpha Cyprus</display-name>\n</channel>\n'
 
-    events = []
-    current_day = 0
     last_hour = -1
+    current_day = 0
 
     for i, (time_str, title) in enumerate(programmes):
         h, m = map(int, time_str.split(":"))
         if h < last_hour and i > 0:
             current_day += 1
-
         start_dt = base_date + timedelta(days=current_day, hours=h, minutes=m)
 
         if i < len(programmes) - 1:
@@ -121,59 +85,26 @@ def build_xml(programmes):
 
         last_hour = h
 
-        # Φιλτράρισμα Δευτέρα(0) έως Πέμπτη(3)
+        # μόνο Δευτέρα-Πέμπτη
         if 0 <= start_dt.weekday() <= 3:
-            events.append((start_dt, stop_dt, title))
-
-    for start_dt, stop_dt, title in events:
-        start = start_dt.strftime("%Y%m%d%H%M%S +0300")
-        stop = stop_dt.strftime("%Y%m%d%H%M%S +0300")
-        xml += f'<programme channel="alpha.cy" start="{start}" stop="{stop}">\n'
-        xml += f"  <title>{title}</title>\n"
-        xml += "</programme>\n"
+            start = start_dt.strftime("%Y%m%d%H%M%S +0300")
+            stop = stop_dt.strftime("%Y%m%d%H%M%S +0300")
+            xml += f'<programme channel="alpha.cy" start="{start}" stop="{stop}">\n'
+            xml += f"  <title>{title}</title>\n"
+            xml += "</programme>\n"
 
     xml += "</tv>"
 
     with open("epg.xml", "w", encoding="utf-8") as f:
         f.write(xml)
+    print(f"✅ epg.xml δημιουργήθηκε με {len(programmes)} προγράμματα (Δευ–Πέμπτη).")
 
-    print(f"✅ Το epg.xml δημιουργήθηκε με {len(events)} προγράμματα (Δευτέρα-Πέμπτη).")
-
-def get_last_run():
-    if os.path.exists(LAST_RUN_FILE):
-        with open(LAST_RUN_FILE, "r") as f:
-            data = json.load(f)
-            return datetime.fromisoformat(data["last_run"])
-    return None
-
-def set_last_run():
-    with open(LAST_RUN_FILE, "w") as f:
-        json.dump({"last_run": datetime.now().isoformat()}, f)
-
-def main_loop():
-    while True:
-        last_run = get_last_run()
-        now = datetime.now()
-
-        if not last_run or (now - last_run).days >= 2:
-            print("\n🚀 Ξεκινάμε ανανέωση XML...")
-            driver = get_driver()
-            driver.get(URL)
-
-            all_programmes = []
-            for day in range(4):
-                day_prog = fetch_day(driver)
-                all_programmes.extend(day_prog)
-                if not click_next(driver):
-                    break
-            driver.quit()
-
-            build_xml(all_programmes)
-            set_last_run()
-            print("✅ Ανανεώθηκε XML.")
-
-        # Έλεγχος κάθε 1 ώρα
-        time.sleep(3600)
+def main():
+    driver = get_driver()
+    driver.get(URL)
+    programmes = fetch_day(driver)
+    driver.quit()
+    build_xml(programmes)
 
 if __name__ == "__main__":
-    main_loop()
+    main()
