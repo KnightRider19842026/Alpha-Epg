@@ -3,10 +3,34 @@
 <channel id="alpha.cy">
   <display-name>Alpha Cyprus</display-name>
 </channel>
-<programme channel="alpha.cy" start="20260406110000 +0300" stop="20260406135000 +0300">
-  <title>Live:</title>
+<programme channel="alpha.cy" start="20260406190000 +0300" stop="20260407064500 +0300">
+  <title>DEAL ΣΤΙΣ</title>
 </programme>
-<programme channel="alpha.cy" start="20260406135000 +0300" stop="20260406145000 +0300">
-  <title>Live:</title>
+<programme channel="alpha.cy" start="20260407064500 +0300" stop="20260407092000 +0300">
+  <title>ALPHA ΚΑΛΗΜΕΡΑ ΣΤΙΣ</title>
+</programme>
+<programme channel="alpha.cy" start="20260407092000 +0300" stop="20260407110000 +0300">
+  <title>BUONGIORNO ΣΤΙΣ</title>
+</programme>
+<programme channel="alpha.cy" start="20260407110000 +0300" stop="20260407190000 +0300">
+  <title>ALPHA ΕΝΗΜΕΡΩΣΗ ΣΤΙΣ</title>
+</programme>
+<programme channel="alpha.cy" start="20260407190000 +0300" stop="20260408151500 +0300">
+  <title>ΤΟ ΣΟΪ ΣΟΥ ΣΤΙΣ</title>
+</programme>
+<programme channel="alpha.cy" start="20260408151500 +0300" stop="20260408170000 +0300">
+  <title>ΜΕ ΑΓΑΠΗ ΧΡΙΣΤΙΑΝΑ ΣΤΙΣ</title>
+</programme>
+<programme channel="alpha.cy" start="20260408170000 +0300" stop="20260408200000 +0300">
+  <title>THE CHASE GREECE ΣΤΙΣ</title>
+</programme>
+<programme channel="alpha.cy" start="20260408200000 +0300" stop="20260409110000 +0300">
+  <title>ALPHA NEWS ΣΤΙΣ</title>
+</programme>
+<programme channel="alpha.cy" start="20260409110000 +0300" stop="20260409110000 +0300">
+  <title>ΕΝΗΜΕΡΩΣΗ / ALPHA ΕΝΗΜΕΡΩΣΗ 13:50</title>
+</programme>
+<programme channel="alpha.cy" start="20260409110000 +0300" stop="20260409120000 +0300">
+  <title>13:50</title>
 </programme>
 </tv>
