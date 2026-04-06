@@ -3,58 +3,58 @@
 <channel id="alpha.cy">
 <display-name>Alpha Cyprus</display-name>
 </channel>
-<programme channel="alpha.cy" start="20260405060000 +0300" stop="20260405064500 +0300">
-<title>DEAL(E)ΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 19:00</title>
-</programme>
-<programme channel="alpha.cy" start="20260405064500 +0300" stop="20260405092000 +0300">
-<title>Live NowALPHA ΚΑΛΗΜΕΡΑΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 06:45</title>
-</programme>
-<programme channel="alpha.cy" start="20260405092000 +0300" stop="20260405110000 +0300">
-<title>BUONGIORNOΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 09:20</title>
-</programme>
-<programme channel="alpha.cy" start="20260405110000 +0300" stop="20260405135000 +0300">
-<title>ALPHA ΕΝΗΜΕΡΩΣΗΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 11:00</title>
-</programme>
-<programme channel="alpha.cy" start="20260405135000 +0300" stop="20260405151500 +0300">
-<title>ΤΟ ΣΟΪ ΣΟΥ(E)ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ ΣΤΙΣ 19:00</title>
-</programme>
-<programme channel="alpha.cy" start="20260405151500 +0300" stop="20260405170000 +0300">
-<title>ΜΕ ΑΓΑΠΗ ΧΡΙΣΤΙΑΝΑΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 15:15</title>
-</programme>
-<programme channel="alpha.cy" start="20260405170000 +0300" stop="20260405175500 +0300">
-<title>THE CHASE GREECEΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 17:00</title>
-</programme>
-<programme channel="alpha.cy" start="20260405175500 +0300" stop="20260405180000 +0300">
-<title>ALPHA NEWSΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 20:00</title>
-</programme>
-<programme channel="alpha.cy" start="20260405180000 +0300" stop="20260405190000 +0300">
-<title>ΝΑ Μ' ΑΓΑΠΑΣ</title>
-</programme>
-<programme channel="alpha.cy" start="20260405190000 +0300" stop="20260405200000 +0300">
+<programme channel="alpha.cy" start="20260406060000 +0300" stop="20260406064500 +0300">
 <title>DEALΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 19:00</title>
 </programme>
-<programme channel="alpha.cy" start="20260405200000 +0300" stop="20260405210000 +0300">
+<programme channel="alpha.cy" start="20260406064500 +0300" stop="20260406092000 +0300">
+<title>Live NowALPHA ΚΑΛΗΜΕΡΑΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 06:45</title>
+</programme>
+<programme channel="alpha.cy" start="20260406092000 +0300" stop="20260406110000 +0300">
+<title>BUONGIORNOΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 09:20</title>
+</programme>
+<programme channel="alpha.cy" start="20260406110000 +0300" stop="20260406135000 +0300">
+<title>ALPHA ΕΝΗΜΕΡΩΣΗΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 11:00</title>
+</programme>
+<programme channel="alpha.cy" start="20260406135000 +0300" stop="20260406151500 +0300">
+<title>ΤΟ ΣΟΪ ΣΟΥΣΑΒΒΑΤΟΚΥΡΙΑΚΟ ΣΤΙΣ 19:00</title>
+</programme>
+<programme channel="alpha.cy" start="20260406151500 +0300" stop="20260406170000 +0300">
+<title>ΜΕ ΑΓΑΠΗ ΧΡΙΣΤΙΑΝΑΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 15:15</title>
+</programme>
+<programme channel="alpha.cy" start="20260406170000 +0300" stop="20260406175500 +0300">
+<title>THE CHASE GREECEΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 17:00</title>
+</programme>
+<programme channel="alpha.cy" start="20260406175500 +0300" stop="20260406180000 +0300">
 <title>ALPHA NEWSΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 20:00</title>
 </programme>
-<programme channel="alpha.cy" start="20260405210000 +0300" stop="20260405222000 +0300">
+<programme channel="alpha.cy" start="20260406180000 +0300" stop="20260406190000 +0300">
+<title>ΝΑ Μ' ΑΓΑΠΑΣ</title>
+</programme>
+<programme channel="alpha.cy" start="20260406190000 +0300" stop="20260406200000 +0300">
+<title>DEALΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 19:00</title>
+</programme>
+<programme channel="alpha.cy" start="20260406200000 +0300" stop="20260406210000 +0300">
+<title>ALPHA NEWSΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 20:00</title>
+</programme>
+<programme channel="alpha.cy" start="20260406210000 +0300" stop="20260406222000 +0300">
 <title>ΑΓΙΟΣ ΕΡΩΤΑΣ</title>
 </programme>
-<programme channel="alpha.cy" start="20260405222000 +0300" stop="20260406000000 +0300">
-<title>ΑΓΙΟΣ ΠΑΪΣΙΟΣ - ΑΠΟ ΤΑ ΦΑΡΑΣΑ ΣΤΟΝ ΟΥΡΑΝΟ(E)</title>
+<programme channel="alpha.cy" start="20260406222000 +0300" stop="20260407000000 +0300">
+<title>ΑΓΙΟΣ ΠΑΪΣΙΟΣ - ΑΠΟ ΤΑ ΦΑΡΑΣΑ ΣΤΟΝ ΟΥΡΑΝΟ</title>
 </programme>
-<programme channel="alpha.cy" start="20260406000000 +0300" stop="20260406010000 +0300">
-<title>ΝΑ Μ' ΑΓΑΠΑΣ(E)</title>
+<programme channel="alpha.cy" start="20260407000000 +0300" stop="20260407010000 +0300">
+<title>ΝΑ Μ' ΑΓΑΠΑΣ</title>
 </programme>
-<programme channel="alpha.cy" start="20260406010000 +0300" stop="20260406020000 +0300">
-<title>ΔΥΟ ΞΕΝΟΙ(E)</title>
+<programme channel="alpha.cy" start="20260407010000 +0300" stop="20260407020000 +0300">
+<title>ΔΥΟ ΞΕΝΟΙ</title>
 </programme>
-<programme channel="alpha.cy" start="20260406020000 +0300" stop="20260406033000 +0300">
-<title>ΟΙ ΑΤΑΙΡΙΑΣΤΟΙ(E)</title>
+<programme channel="alpha.cy" start="20260407020000 +0300" stop="20260407033000 +0300">
+<title>ΟΙ ΑΤΑΙΡΙΑΣΤΟΙ</title>
 </programme>
-<programme channel="alpha.cy" start="20260406033000 +0300" stop="20260406044500 +0300">
-<title>MONEY DROP(E)ΔΕΣ ΟΛΑ ΤΑ ΕΠΕΙΣΟΔΙΑ ΣΤΟ WEBTV</title>
+<programme channel="alpha.cy" start="20260407033000 +0300" stop="20260407044500 +0300">
+<title>MONEY DROPΔΕΣ ΟΛΑ ΤΑ ΕΠΕΙΣΟΔΙΑ ΣΤΟ WEBTV</title>
 </programme>
-<programme channel="alpha.cy" start="20260406044500 +0300" stop="20260406054500 +0300">
-<title>ΜΕ ΑΓΑΠΗ ΧΡΙΣΤΙΑΝΑ(E)ΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 15:15</title>
+<programme channel="alpha.cy" start="20260407044500 +0300" stop="20260407054500 +0300">
+<title>ΜΕ ΑΓΑΠΗ ΧΡΙΣΤΙΑΝΑΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 15:15</title>
 </programme>
 </tv>
