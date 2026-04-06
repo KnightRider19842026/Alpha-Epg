@@ -139,17 +139,16 @@ def main():
 
     all_programmes = []
 
-    # 🔥 πάρε 3 μέρες για να είσαι safe (πιάνει πλήρη 48h πάντα)
     for _ in range(3):
-    day_programmes = fetch_day(driver)
+        day_programmes = fetch_day(driver)
 
-    # 👉 εδώ μπαίνει το fix για 24ωρο
-    day_programmes = fill_24h(day_programmes)
+        # 👉 fix 24ωρου
+        day_programmes = fill_24h(day_programmes)
 
-    all_programmes.extend(day_programmes)
+        all_programmes.extend(day_programmes)
 
-    if not click_next(driver):
-        break
+        if not click_next(driver):
+            break
 
     driver.quit()
 
