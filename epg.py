@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 import time
+import re
 
 URL = "https://www.alphacyprus.com.cy/program"
 
@@ -16,22 +17,16 @@ def get_driver():
     return webdriver.Chrome(options=options)
 
 
-def fetch_day_html(driver):
+def clean_title(title):
+    # αφαιρεί (E), (R), επεισόδια κλπ
+    title = re.sub(r"\(.*?\)", "", title)
+    title = re.sub(r"\s+", " ", title)
+    return title.strip()
+
+
+def fetch_day(driver):
     time.sleep(3)
-    return driver.page_source
-
-
-def click_next_day(driver):
-    try:
-        next_btn = driver.find_element(By.XPATH, "//button[contains(., 'Next')]")
-        driver.execute_script("arguments[0].click();", next_btn)
-        time.sleep(3)
-        return True
-    except:
-        return False
-
-
-def parse(html):
+    html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
 
     programmes = []
@@ -44,20 +39,27 @@ def parse(html):
             current_time = text
 
         elif current_time and len(text) > 2:
-            programmes.append((current_time, text))
+            programmes.append((current_time, clean_title(text)))
             current_time = None
 
     return programmes
 
 
-def build_xml(all_programmes):
+def click_next(driver):
+    try:
+        btn = driver.find_element(By.XPATH, "//button[contains(., 'Next')]")
+        driver.execute_script("arguments[0].click();", btn)
+        time.sleep(3)
+        return True
+    except:
+        return False
+
+
+def build_xml(programmes):
     now = datetime.now()
 
-    # FIX broadcast day (Alpha αλλάζει στις 06:00)
-    if now.hour < 6:
-        base_date = now - timedelta(days=1)
-    else:
-        base_date = now
+    # 🔥 σωστή βάση ημέρας
+    base_date = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
     xml = "<?xml version='1.0' encoding='utf-8'?>\n<tv>\n"
     xml += '<channel id="alpha.cy">\n'
@@ -65,26 +67,26 @@ def build_xml(all_programmes):
     xml += "</channel>\n"
 
     current_day = 0
-    last_hour = 0
+    last_hour = -1
 
-    for i, (time_str, title) in enumerate(all_programmes):
+    for i, (time_str, title) in enumerate(programmes):
 
         h, m = map(int, time_str.split(":"))
 
-        # Αν η ώρα πάει πίσω → επόμενη μέρα
+        # αν γυρίσει πίσω → νέα μέρα
         if h < last_hour:
             current_day += 1
 
-        start_dt = base_date.replace(hour=h, minute=m, second=0) + timedelta(days=current_day)
+        start_dt = base_date + timedelta(days=current_day, hours=h, minutes=m)
 
-        if i < len(all_programmes) - 1:
-            nh, nm = map(int, all_programmes[i + 1][0].split(":"))
+        if i < len(programmes) - 1:
+            nh, nm = map(int, programmes[i + 1][0].split(":"))
             next_day = current_day
 
             if nh < h:
                 next_day += 1
 
-            stop_dt = base_date.replace(hour=nh, minute=nm, second=0) + timedelta(days=next_day)
+            stop_dt = base_date + timedelta(days=next_day, hours=nh, minutes=nm)
         else:
             stop_dt = start_dt + timedelta(minutes=60)
 
@@ -109,13 +111,12 @@ def main():
 
     all_programmes = []
 
-    # 👉 πάρε 2 μέρες
-    for _ in range(2):
-        html = fetch_day_html(driver)
-        programmes = parse(html)
-        all_programmes.extend(programmes)
+    # 🔥 πάρε 3 μέρες για να είσαι safe (πιάνει πλήρη 48h πάντα)
+    for _ in range(3):
+        day_programmes = fetch_day(driver)
+        all_programmes.extend(day_programmes)
 
-        if not click_next_day(driver):
+        if not click_next(driver):
             break
 
     driver.quit()
