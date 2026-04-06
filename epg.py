@@ -17,22 +17,35 @@ def get_driver():
     return webdriver.Chrome(options=options)
 
 
-def clean_title(title):
-    import re
+import re
 
-    # remove parentheses (E), (R)
+def clean_title(title):
+    # αφαιρεί παρενθέσεις π.χ. (E), (R)
     title = re.sub(r"\(.*?\)", "", title)
 
-    # remove ΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ ΧΧ:ΧΧ (ακόμα και κολλημένο)
-    title = re.sub(r"ΚΑΘΗΜΕΡΙΝΑ\s*ΣΤΙΣ\s*\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
+    # αφαιρεί LIVE NOW (case-insensitive)
+    title = re.sub(r"live now", "", title, flags=re.IGNORECASE)
 
-    # remove leftovers χωρίς κενά
-    title = re.sub(r"ΚΑΘΗΜΕΡΙΝΑ.*?\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
+    # αφαιρεί ημέρες + ώρα, π.χ. ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ ΣΤΙΣ 19:00 ή ΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 21:30
+    title = re.sub(r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ|ΔΕΥΤΕΡΑ|ΤΡΙΤΗ|ΤΕΤΑΡΤΗ|ΠΕΜΠΤΗ|ΠΑΡΑΣΚΕΥΗ|ΣΑΒΒΑΤΟ|ΚΥΡΙΑΚΗ)\s*ΣΤΙΣ\s*\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
 
-    # clean spaces
-    title = re.sub(r"\s+", " ", title)
+    # αφαιρεί γενικά υπολείμματα με μέρα + ώρα κολλημένα
+    title = re.sub(r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ).*?\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
 
-    return title.strip()
+    # καθαρίζει περιττά κενά
+    title = re.sub(r"\s+", " ", title).strip()
+
+    return title
+
+# παραδείγματα
+titles = [
+    "DEAL (E) LIVE NOW",
+    "ΜΑΓΕΙΡΙΚΗ ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ ΣΤΙΣ 19:00",
+    "ΤΑ ΕΠΕΙΣΟΔΙΑ (R) ΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ 21:30"
+]
+
+for t in titles:
+    print(clean_title(t))
 
 
 def fetch_day(driver):
