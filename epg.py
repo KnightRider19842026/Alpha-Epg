@@ -18,11 +18,16 @@ def get_driver():
 
 
 def clean_title(title):
-    # remove (E), (R), etc
+    import re
+
+    # remove parentheses (E), (R)
     title = re.sub(r"\(.*?\)", "", title)
 
-    # remove "Καθημερινά στις ..."
-    title = re.sub(r"Καθημερινά\s+στις\s+\d{1,2}:\d{2}.*", "", title, flags=re.IGNORECASE)
+    # remove ΚΑΘΗΜΕΡΙΝΑ ΣΤΙΣ ΧΧ:ΧΧ (ακόμα και κολλημένο)
+    title = re.sub(r"ΚΑΘΗΜΕΡΙΝΑ\s*ΣΤΙΣ\s*\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
+
+    # remove leftovers χωρίς κενά
+    title = re.sub(r"ΚΑΘΗΜΕΡΙΝΑ.*?\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
 
     # clean spaces
     title = re.sub(r"\s+", " ", title)
@@ -101,20 +106,8 @@ def build_xml(programmes):
         events.append((start_dt, stop_dt, title))
 
     # keep ONLY today 00:00–23:59
-    start_limit = base_date
-    end_limit = base_date + timedelta(days=1)
 
-    xml_events = []
-
-    for start_dt, stop_dt, title in events:
-
-        if stop_dt <= start_limit or start_dt >= end_limit:
-            continue
-
-        start_dt = max(start_dt, start_limit)
-        stop_dt = min(stop_dt, end_limit)
-
-        xml_events.append((start_dt, stop_dt, title))
+    xml_events = events
 
     # build XML
     for start_dt, stop_dt, title in xml_events:
