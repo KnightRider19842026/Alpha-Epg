@@ -6,18 +6,19 @@ import re
 URL = "https://www.alphacyprus.com.cy/program"
 
 def clean_title(title):
-    title = re.sub(r"\(.*?\)", "", title)  # αφαιρεί παρενθέσεις (E),(R)
+    # αφαιρεί παρενθέσεις, live now, μέρα+ώρα, WEBTV, copyright
+    title = re.sub(r"\(.*?\)", "", title)
     title = re.sub(r"live now", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"Δες όλα τα επεισόδια στο WEBTV", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"copyright.*", "", title, flags=re.IGNORECASE)
     title = re.sub(
         r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ|ΔΕΥΤΕΡΑ|ΤΡΙΤΗ|ΤΕΤΑΡΤΗ|ΠΕΜΠΤΗ|ΠΑΡΑΣΚΕΥΗ|ΣΑΒΒΑΤΟ|ΚΥΡΙΑΚΗ)\s*ΣΤΙΣ\s*\d{1,2}:\d{2}",
         "", title, flags=re.IGNORECASE
     )
     title = re.sub(r"(ΚΑΘΗΜΕΡΙΝΑ|ΣΑΒΒΑΤΟΚΥΡΙΑΚΟ).*?\d{1,2}:\d{2}", "", title, flags=re.IGNORECASE)
-    title = re.sub(r"Δες όλα τα επεισόδια στο WEBTV", "", title, flags=re.IGNORECASE)
     return re.sub(r"\s+", " ", title).strip()
 
 def fetch_next_day_programmes():
-    print("Φόρτωση προγράμματος...")
     resp = requests.get(URL)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -39,11 +40,15 @@ def fetch_next_day_programmes():
             current_time = None
 
     tomorrow = datetime.now() + timedelta(days=1)
+    # Αφαιρούμε Τετάρτη
+    if tomorrow.weekday() == 2:  # 0=Δευτέρα, 2=Τετάρτη
+        print("Η επόμενη μέρα είναι Τετάρτη → δεν δημιουργούμε πρόγραμμα.")
+        return [], tomorrow
     return programmes, tomorrow
 
 def build_xml(programmes, target_date):
     if not programmes:
-        print("❌ Κανένα πρόγραμμα βρέθηκε.")
+        print("❌ Κανένα πρόγραμμα βρέθηκε για την επόμενη μέρα.")
         return
 
     base_date = target_date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -53,11 +58,13 @@ def build_xml(programmes, target_date):
     for i, (time_str, title) in enumerate(programmes):
         h, m = map(int, time_str.split(":"))
         start_dt = base_date + timedelta(hours=h, minutes=m)
+
+        # Υπολογισμός ακριβούς ώρας λήξης
         if i < len(programmes) - 1:
             nh, nm = map(int, programmes[i + 1][0].split(":"))
             stop_dt = base_date + timedelta(hours=nh, minutes=nm)
         else:
-            stop_dt = start_dt + timedelta(minutes=60)
+            stop_dt = start_dt + timedelta(minutes=60)  # Τελευταίο πρόγραμμα 60 λεπτά
 
         start = start_dt.strftime("%Y%m%d%H%M%S +0300")
         stop = stop_dt.strftime("%Y%m%d%H%M%S +0300")
@@ -68,7 +75,7 @@ def build_xml(programmes, target_date):
 
     with open("epg.xml", "w", encoding="utf-8") as f:
         f.write(xml)
-    print(f"✅ epg.xml δημιουργήθηκε με {len(programmes)} προγράμματα για {target_date.strftime('%Y-%m-%d')}.")
+    print(f"✅ epg.xml δημιουργήθηκε με {len(programmes)} προγράμματα για {target_date.strftime('%A, %d-%m-%Y')}.")
 
 def main():
     programmes, target_date = fetch_next_day_programmes()
