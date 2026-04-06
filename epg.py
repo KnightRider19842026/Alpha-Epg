@@ -56,39 +56,74 @@ for t in titles:
 
 
 def fetch_day(driver):
-    time.sleep(5)
+    time.sleep(5)                    # περισσότερος χρόνος για JS
+    
+    html = driver.page_source
+    soup = BeautifulSoup(html, "html.parser")
+    
     programmes = []
     
-    try:
-        # Προσαρμόστε το selector ανάλογα με την τρέχουσα δομή της σελίδας
-        rows = driver.find_elements(By.CSS_SELECTOR, "div[class*='program'], div[class*='schedule'], div.time-slot, .entry")
-        
-        for row in rows:
-            try:
-                time_el = row.find_element(By.XPATH, ".//*[contains(text(), ':') and string-length(text()) <= 6]")
-                title_el = row.find_element(By.XPATH, ".//a | .//h3 | .//div[contains(@class,'title')]")
-                
-                time_str = time_el.text.strip()
-                title = clean_title(title_el.text.strip())
-                
-                if re.match(r'^\d{1,2}:\d{2}$', time_str) and title:
-                    programmes.append((time_str, title))
-            except:
-                continue
-    except Exception as e:
-        print("Error in fetch_day:", e)
+    # Βελτιωμένη αναζήτηση για ώρα + τίτλος
+    # Ψάχνουμε για στοιχεία που περιέχουν ώρα τύπου XX:XX
+    time_pattern = re.compile(r'(\d{1,2}:\d{2})')
     
-    print(f"Found {len(programmes)} programmes this day")
-    return programmes
+    # Βρίσκουμε όλα τα πιθανά containers
+    containers = soup.find_all(["div", "li", "tr", "a"], class_=True)
+    
+    for container in containers:
+        text = container.get_text(strip=True)
+        
+        # Βρες την ώρα μέσα στο container
+        match = time_pattern.search(text)
+        if not match:
+            continue
+            
+        time_str = match.group(1)
+        
+        # Αφαίρεσε την ώρα από το text για να πάρεις τον τίτλο
+        title = time_pattern.sub("", text).strip()
+        title = clean_title(title)
+        
+        # Αν ο τίτλος είναι πολύ μικρός ή περιέχει μόνο κατηγορία, παράλειψε
+        if len(title) > 3 and not title.isdigit():
+            programmes.append((time_str, title))
+    
+    # Αφαίρεσε διπλότυπα (σε περίπτωση που πιάσει πολλές φορές το ίδιο)
+    seen = set()
+    unique_programmes = []
+    for t, title in programmes:
+        key = (t, title)
+        if key not in seen:
+            seen.add(key)
+            unique_programmes.append((t, title))
+    
+    print(f"   → Βρέθηκαν {len(unique_programmes)} προγράμματα σήμερα")
+    return unique_programmes
 
 
 def click_next(driver):
     try:
-        btn = driver.find_element(By.XPATH, "//button[contains(., 'Next')]")
-        driver.execute_script("arguments[0].click();", btn)
-        time.sleep(3)
-        return True
-    except:
+        # Δοκίμασε διάφορους τρόπους
+        possible_selectors = [
+            "//button[contains(., 'Next') or contains(., 'Επόμενη')]",
+            "//button[contains(@class, 'next')]",
+            "//button[@aria-label='Next']",
+            "//span[contains(text(), '→')]/parent::button",
+            "//a[contains(., 'Next')]"
+        ]
+        
+        for xpath in possible_selectors:
+            btns = driver.find_elements(By.XPATH, xpath)
+            for btn in btns:
+                if btn.is_displayed() and btn.is_enabled():
+                    driver.execute_script("arguments[0].scrollIntoView(true);", btn)
+                    time.sleep(1)
+                    driver.execute_script("arguments[0].click();", btn)
+                    time.sleep(5)
+                    return True
+        return False
+    except Exception as e:
+        print("Click next error:", e)
         return False
 
 
@@ -166,6 +201,13 @@ def main():
             break
 
     driver.quit()
+
+    print(f"Συνολικά προγράμματα που συλλέχθηκαν: {len(all_programmes)}")
+    if all_programmes:
+        print("Πρώτα 10:", all_programmes[:10])
+        print("Τελευταία 10:", all_programmes[-10:])
+    else:
+        print("ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Δεν βρέθηκε ΚΑΝΕΝΑ πρόγραμμα!")
 
     build_xml(all_programmes)
 
